@@ -1,0 +1,92 @@
+openapi: 3.0.0
+info:
+  title: A sample 'Hello World' API document
+  description: "# documentation for 'Hello World' API \n"
+  version: "1.0"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "sugrivarbad@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  
+servers:
+- url: /
+paths:
+  /hello:
+    get:
+      tags:
+      - Hello World
+      summary: Get a hello world message in a language of your choice
+      description: Get a hello world message in a language of your choice
+      operationId: hello_get
+      parameters:
+      - name: language
+        in: query
+        description: The language of the response
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - French
+          - English
+          - Hindi
+        example: Hindi
+      responses:
+        "200":
+          description: A hello world message in the requested language
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: There was an error in the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.hello_world_controller
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error_message:
+          type: string
+          description: A descriptive error message
+          example: The requested language is not supported
+    MessageSummary:
+      type: object
+      properties:
+        ID:
+          type: string
+          description: The ID of the message. Any alphanumeric string can be returned.
+          example: A123456789
+        msgText:
+          type: string
+          description: The Hello World message in the requested language
+          enum:
+          - Bonjour le monde
+          - Hello world
+          - Namastey sansar
+      example:
+        msgText: Bonjour le monde
+        ID: A123456789
+    inline_response_200:
+      properties:
+        message:
+          $ref: '#/components/schemas/MessageSummary'
+      example:
+        message:
+          msgText: Bonjour le monde
+          ID: A123456789
+  responses:
+    BadRequest:
+      description: There was an error in the request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
